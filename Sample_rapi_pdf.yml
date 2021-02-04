@@ -1,0 +1,4492 @@
+openapi: 3.0.2
+tags:
+  - name: Plugin Setting
+    description: Configuration Operations
+  - name: TechDirect
+    description: TechDirect Operations
+  - name: Plugin Registration
+    description: Registration Operations
+  - name: Connectivity
+    description: Connectivity tests Operations
+  - name: Case Management
+    description: Case Operations
+  - name: Collections Management
+    description: Collections Operations
+  - name: Device Management
+    description: Device Operations
+  - name: Dashboard Management
+    description: Plugin Dashboard Operations
+  - name: Group Management
+    description: Group Operations
+  - name: SupportAssist Service
+    description: SupportAssist Overview
+info:
+  title: OpenManage Enterprise SupportAssist API
+  version: '1.0'
+  description: OpenManage Enterprise SupportAssist provides RESTful APIs to enable automation. The APIs are compliant with OpenAPI Specification (OAS) 3.0.0 and later. It is assumed that the reader is familiar with REST APIs and programmatic interaction with REST APIs.
+  contact: {}
+servers:
+  - url: 'https://{hostname}/api'
+components:
+  headers:
+    location:
+      schema:
+        type: string
+  parameters:
+    TestNow:
+      name: testServer
+      in: query
+      description: Test and fetch result if true
+      schema:
+        type: boolean
+    Top:
+      name: $top
+      in: query
+      description: Top elements
+      schema:
+        type: integer
+    Skip:
+      name: $skip
+      in: query
+      description: Skip elements
+      schema:
+        type: integer
+    Count:
+      name: count
+      in: query
+      description: Count
+      schema:
+        type: integer
+    CountryCode:
+      name: country
+      in: query
+      description: country code
+      schema:
+        type: string
+    StateCode:
+      name: state
+      in: query
+      description: state code
+      schema:
+        type: string
+    ETag:
+      name: IF-Match
+      in: header
+      description: ETag for Case Action Request
+      schema:
+        type: string
+    AuditName:
+      name: name
+      in: query
+      description: Audit report name
+      schema:
+        type: string
+    AuditFormat:
+      name: format
+      in: query
+      description: Audit download format
+      schema:
+        type: string
+    TechDirectOTP:
+      name: techDirectOTP
+      in: header
+      description: TechDirect OTP
+      schema:
+        type: string
+    FileTransferSessionFilter:
+      name: $filter
+      in: query
+      description: File Transfer Session filter params
+      schema:
+        type: string
+        enum:
+          - SerialNum
+          - FileName
+          - FileSize
+          - TransferType
+          - TransferRate
+          - RemainingTime
+          - PercentageComplete
+    CasesSort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - id
+          - name
+          - title
+          - serviceTag
+          - status
+          - serviceContract
+          - createdDate
+          - collectionDate
+          - purpose
+          - caseNumber
+          - uploadStatus
+          - model
+        example: name
+        default: id
+    CaseId:
+      name: Id
+      in: query
+      required: false
+      schema:
+        type: string
+        description: Case ID
+    CaseEventSource:
+      name: EventSource
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - Phone
+          - Email
+          - Chat
+          - SupportAssist
+          - TechDirect
+          - HelpDesk
+          - Others
+        description: Case event source
+    CaseServiceContract:
+      name: ServiceContract
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - ProSupportFlex
+          - ProSupportPlus
+          - ProSupport
+          - Basic
+          - ExpiredWarranty
+        description: Case service source
+    CaseServiceTag:
+      name: ServiceTag
+      in: query
+      description: Service Tag
+      schema:
+        type: string
+    OrderBy:
+      name: orderBy
+      in: query
+      description: Order By
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+    CollectionsSort:
+      name: sort
+      in: query
+      description: Collections sort params
+      schema:
+        type: string
+        enum:
+          - collectionName
+          - collectionPurpose
+          - uploadStatus
+          - caseNumber
+          - collectionDate
+          - collectionStatus
+    HostName:
+      name: hostname
+      in: query
+      description: Device Name
+      schema:
+        type: string
+    CollectionPurpose:
+      name: collectionPurpose
+      in: query
+      description: Collection Purpose
+      schema:
+        type: string
+        enum:
+          - technicalSupport
+          - deployment
+          - systemMaintenance
+          - consulting
+          - others
+    CollectionStatus:
+      name: collectionStatus
+      in: query
+      description: Collection Status
+      schema:
+        type: string
+        enum:
+          - Initiated
+          - In Progress
+          - Completed
+          - Completed With Warnings
+          - Completed Partially
+          - Execution Failed
+          - Cancel Initiated
+          - Cancel In Progress
+          - Cancelled
+          - Aborted
+    CollectionType:
+      name: collectionType
+      in: query
+      description: Collection type
+      schema:
+        type: string
+        enum:
+          - manual
+          - periodic
+          - alertBased
+    ServiceTag:
+      name: ServiceTag
+      in: query
+      description: Service Tag
+      schema:
+        type: string
+    StartDate:
+      name: StartDate
+      in: query
+      description: Collection Start Date
+      schema:
+        type: string
+    EndDate:
+      name: endDate
+      in: query
+      description: Collection End Date
+      schema:
+        type: string
+    DeviceId:
+      name: deviceId
+      in: query
+      description: Device Id of a Device
+      schema:
+        type: string
+    DeviceFilter:
+      name: $filter
+      in: query
+      description: Devices filter params
+      schema:
+        type: string
+        enum:
+          - DeviceId
+          - State
+          - MaintenanceMode
+    DeviceSort:
+      name: $sort
+      in: query
+      description: Devices sort params
+      schema:
+        type: string
+        enum:
+          - DeviceId
+          - State
+          - MaintenanceMode
+    GroupsFilter:
+      name: $filter
+      in: query
+      description: Groups filter params
+      schema:
+        type: string
+        enum:
+          - Name
+          - Id
+  schemas:
+    NonDispatchCountry:
+      type: object
+      properties:
+        CountryName:
+          type: string
+          nullable: false
+          description: Country name
+        CountryCode:
+          type: string
+          nullable: false
+          description: Coutry ISO code
+        SrsCountryCode:
+          type: string
+          nullable: false
+          description: SRS country code
+    GroupStatusMap:
+      type: object
+      properties:
+        GroupId:
+          type: integer
+          nullable: false
+          description: GroupId of created group
+        StatusFlags:
+          type: object
+          properties:
+            MaintenanceMode:
+              type: boolean
+              nullable: false
+              description: Maintenance Mode status
+    GroupModel:
+      type: object
+      properties:
+        Id:
+          type: integer
+          nullable: false
+          description: Group Identifier. 0 for creating group
+        Name:
+          type: string
+          nullable: false
+          description: Group Name
+        Description:
+          type: string
+          nullable: true
+          description: Group Description
+        ContactOptIn:
+          type: boolean
+          nullable: false
+          description: True if Group Contact information is provided
+        DispatchOptIn:
+          type: boolean
+          nullable: false
+          description: True if Dispatch Details for Group is provided
+        MyAccountId:
+          type: string
+          nullable: true
+          description: Not Required.
+        CustomerDetails:
+          $ref: '#/components/schemas/CustomerDetails'
+    CustomerDetails:
+      type: object
+      properties:
+        PrimaryContact:
+          $ref: '#/components/schemas/ContactProfile'
+        SecondaryContact:
+          $ref: '#/components/schemas/ContactProfile'
+        ShippingDetails:
+          $ref: '#/components/schemas/ShippingDetails'
+    DispatchAddressRequest:
+      type: object
+      properties:
+        CountryIsoCode:
+          type: string
+          description: countrycode
+          nullable: false
+        State:
+          type: string
+          description: statecode
+          nullable: false
+        City:
+          type: string
+          description: city name
+          nullable: true
+        AddressLine1:
+          type: string
+          description: address line1
+          nullable: false
+        AddressLine2:
+          type: string
+          description: address line2
+          nullable: true
+        ZipPostalCode:
+          type: string
+          description: zippostal code
+          nullable: true
+    CollectionDevices:
+      type: object
+      properties:
+        Devices:
+          type: array
+          items:
+            type: object
+            properties:
+              DeviceId:
+                type: string
+                description: Device Identifier
+              HostName:
+                type: string
+                description: Device hostname or ipaddress
+              ServiceTag:
+                type: string
+                description: Device service Tag
+              ErrorCode:
+                type: string
+                description: Device Collection Error Code
+              ErrorMessage:
+                type: string
+                description: Device Collection Error Message
+              CollectionStatus:
+                type: string
+                enum:
+                  - Success
+                  - Warning
+                  - Failed
+                  - Partial
+                description: Status of the completed collection
+    SupportAssistMain:
+      type: object
+      properties:
+        Registration:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              description: Navigation Link to Client details
+              example: /SupportAssistService/Registration
+        Cases:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              description: Navigation Link to Cases
+              example: /SupportAssistService/Cases
+        Collections:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              description: Navigation Link to Collections
+              example: /SupportAssistService/Collections
+        DeviceSummary:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              description: Navigation Link to SAE Devices
+              example: /SupportAssistService/DeviceSummary
+        Configurations:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              description: Navigation Link to Configurations
+              example: /SupportAssistService/Configurations
+        ServerTests:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              description: Navigation Link to Server Tests
+              example: /SupportAssistService/ServerTests
+    SAEAssetSummary:
+      type: object
+      properties:
+        ManagedAssetCount:
+          type: integer
+          format: int64
+          description: Overall count of assets which are managed currently.
+        ManagedAssetStorageCount:
+          type: integer
+          format: int64
+          description: count of Storage assets which are managed currently.
+        ManagedAssetDataProtectionCount:
+          type: integer
+          format: int64
+          description: count of Data Protection assets which are managed currently.
+        ManagedAssetServerCount:
+          type: integer
+          format: int64
+          description: count of Server assets which are managed currently.
+        ManagedAssetSolutionCount:
+          type: integer
+          format: int64
+          description: count of Solution assets which are managed currently.
+        ManagedAssetNetworkingCount:
+          type: integer
+          format: int64
+          description: count of Networking assets which are managed currently.
+        ManagedAssetChassisCount:
+          type: integer
+          format: int64
+          description: count of Chassis assets which are managed currently.
+        TotalOmeAssetCount:
+          type: integer
+          format: int64
+          description: count of Chassis assets which are managed currently.
+        UnmanagedAssetCount:
+          type: integer
+          format: int64
+          description: count of Chassis assets which are managed currently.
+    AssetCapabilitySummary:
+      type: object
+      properties:
+        Status:
+          type: string
+          description: Status
+        ErrorMessage:
+          type: string
+          description: Error Message.
+        ErrorCode:
+          type: string
+          description: Error Code.
+        Remediation:
+          type: string
+          description: Error Remediation.
+    StagedAssetErrorSummary:
+      type: object
+      properties:
+        AssetCount:
+          type: integer
+          description: Number of devices
+        HostNames:
+          type: array
+          description: List of Hosts
+          items:
+            type: string
+            description: Host Names
+        ErrorMessage:
+          type: string
+          description: Error Message.
+        ErrorCode:
+          type: string
+          description: Error Code.
+        Remediation:
+          type: string
+          description: Error Remediation.
+    UnmanagedDeviceSummary:
+      type: object
+      properties:
+        HostNames:
+          type: array
+          description: Unmanaged Hosts
+          items:
+            type: string
+            nullable: false
+    DeviceModel:
+      type: object
+      description: Refer OME devices model
+    StagedAssetSummary:
+      type: object
+      properties:
+        StagedAssetCount:
+          type: integer
+          format: int64
+          description: Count of assets which are in staging currently.
+        StagedAssetSummaryDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/StagedAssetErrorSummary'
+    AssetSummary:
+      type: object
+      properties:
+        ManagedDeviceSummary:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/DeviceSummary/ManagedDeviceSummary
+              description: Navigation link for Managed Devices Summary
+        StagingDeviceSummary:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/DeviceSummary/StagedDeviceSummary
+              description: Navigation link for Staged Devices Summary
+        UnmanagedDeviceSummary:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/DeviceSummary/UnmanagedDeviceSummary
+              description: Navigation link for UnManaged Devices Summary
+        GroupEligibleDevices:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/DeviceSummary/GroupEligibleDevices
+              description: Navigation link for Group Eligible Devices
+    SAEAsset:
+      type: object
+      properties:
+        SupportAssistEnabled:
+          type: boolean
+          description: true If SupportAssist is enabled for a device
+        AssetId:
+          type: string
+          description: This attributes contains unique key to identify a Asset.
+        HostIPAddress:
+          type: string
+          description: This attributes contains IPAddress of the Asset.
+        HostName:
+          type: string
+          description: This attributes contains Hostname of the Asset.
+        FriendlyName:
+          type: string
+          description: This attributes contains Asset friendly assigned by customer name to Asset.
+        AssetType:
+          type: string
+          description: This attributes contains Asset type details.
+        AssetSubType:
+          type: string
+          description: This attributes contains Asset subtype details.
+        AssetFamily:
+          type: string
+          description: This attributes contains Asset family details.
+        Manufacturer:
+          type: string
+          description: This attributes contains Manufacturer of the Asset.
+        ServiceTag:
+          type: string
+          description: This attributes contains serviceTag of the Asset.
+        SerialNumber:
+          type: string
+          description: This attributes contains serialNumber of the Asset.
+        Model:
+          type: string
+          description: This attributes contains Model of the Asset.
+        State:
+          type: string
+          description: This attributes contains State of the Asset.
+        Status:
+          type: string
+          description: This attributes contains Status of the Asset.
+        MaintenanceMode:
+          type: string
+          description: This attribute contains the maintenance mode state for the Asset.
+        Version:
+          type: string
+          description: This attribute contains the firmware version for the Asset.
+        EnableMonitoring:
+          type: string
+          description: This attribute contains the value of enable monitoring set by user.
+        Os:
+          type: string
+          description: Operation System.
+        OsType:
+          type: string
+          description: Operation System Type.
+        OsVersion:
+          type: string
+          description: Operation System Version.
+        IsmVersion:
+          type: string
+          description: This attribute contains the value of ismVersion.
+        OmsaInstalled:
+          type: string
+          description: This attribute contains the value whether OMSA is installed or not in the system.
+        OmsaVersion:
+          type: string
+          description: This attribute contains the value of omsaVersion.
+        OmsaStatus:
+          type: string
+          description: This attribute contains the OMSA service status.
+        Capabilities:
+          $ref: '#/components/schemas/AssetCapabilities'
+        LastValidatedOn:
+          $ref: '#/components/schemas/Date'
+    AssetCapabilities:
+      type: object
+      properties:
+        Connectivity:
+          $ref: '#/components/schemas/AssetCapabilitySummary'
+        CollectionCapability:
+          $ref: '#/components/schemas/AssetCapabilitySummary'
+        MonitoringCapability:
+          $ref: '#/components/schemas/AssetCapabilitySummary'
+      x-examples:
+        example-1: {}
+      description: ''
+    GroupCollectionPostDetails:
+      type: object
+      description: device details
+      properties:
+        GroupId:
+          description: list of device ids
+          type: array
+          items:
+            type: string
+        CollectionName:
+          type: string
+          description: name of the collection
+          maxLength: 20
+          nullable: false
+        CaseNumber:
+          type: string
+          description: associated case number of the collection
+          maxLength: 12
+          nullable: false
+        UploadRequired:
+          type: boolean
+          description: collection needs to be uploaded
+          nullable: false
+        EmailId:
+          type: string
+          description: Email address of the technician
+          nullable: false
+        CollectionPurpose:
+          type: string
+          enum:
+            - TechnicalSupport
+            - Deployment
+            - SystemMaintenance
+            - Consulting
+            - ''
+          description: purpose of the collection
+          nullable: false
+        ProjectId:
+          type: string
+          description: project id used during deployment
+          maxLength: 50
+          nullable: false
+    CollectionPostDetails:
+      type: object
+      description: device details
+      properties:
+        DeviceIds:
+          description: list of device identifiers
+          type: array
+          items:
+            type: string
+        CollectionName:
+          type: string
+          description: name of the collection
+          maxLength: 20
+          nullable: false
+        CaseNumber:
+          type: string
+          description: associated case number of the collection
+          maxLength: 12
+          nullable: false
+        UploadRequired:
+          type: boolean
+          description: collection needs to be uploaded
+          nullable: false
+        EmailId:
+          type: string
+          description: Email address of the technician
+          nullable: false
+        CollectionPurpose:
+          type: string
+          enum:
+            - TechnicalSupport
+            - Deployment
+            - SystemMaintenance
+            - Consulting
+            - ''
+          description: purpose of the collection
+          nullable: false
+        ProjectId:
+          type: string
+          description: project id used during deployment
+          maxLength: 50
+          nullable: false
+    CollectionId:
+      type: object
+      properties:
+        Id:
+          type: string
+          nullable: false
+    CollectionIds:
+      type: object
+      properties:
+        Id:
+          type: array
+          description: Collection identifiers
+          items:
+            type: string
+            nullable: false
+    Collections:
+      type: object
+      description: List of collections
+      properties:
+        '@odata.context':
+          type: string
+          readOnly: true
+          nullable: false
+          description: OData context for entity
+          example: '/api/$metadata#Collections'
+        odata.count:
+          type: integer
+          description: Count of collections
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionInfo'
+    CollectionInfo:
+      type: object
+      properties:
+        Id:
+          type: string
+          nullable: false
+          description: unique collection id
+        Name:
+          type: string
+          nullable: false
+          description: collection Name
+        Date:
+          $ref: '#/components/schemas/Date'
+        Purpose:
+          type: string
+          enum:
+            - TechnicalSupport
+            - Deployment
+            - SystemMaintenance
+            - Consulting
+          description: purpose of the collection
+          nullable: false
+        CaseNumber:
+          type: string
+          nullable: false
+          description: case associated for collection
+        UploadStatus:
+          type: string
+          enum:
+            - Success
+            - InProgress
+            - Failed
+            - NeverUploaded
+          description: Status of the collection upload
+        Progress:
+          type: string
+          description: Collection Completion Percentage
+        CollectionType:
+          type: string
+          enum:
+            - manual
+            - periodic
+            - alertBased
+          description: Collection Type
+          nullable: false
+        CollectionStatus:
+          type: string
+          enum:
+            - Initiated
+            - In Progress
+            - Completed
+            - Completed With Warnings
+            - Completed Partially
+            - Execution Failed
+            - Cancel Initiated
+            - Cancel In Progress
+            - Cancelled
+            - Aborted
+          description: Collection Status
+          nullable: false
+        CanCancel:
+          type: boolean
+          description: To define whether collection can be cancelled by user
+          default: false
+        JobId:
+          type: string
+          description: JobId corresponding to this collection
+          nullable: false
+    CollectionDetail:
+      type: object
+      properties:
+        CanDownload:
+          type: boolean
+          description: 'Indicates whether collection can be downloaded or not. '
+          default: false
+        CanUpload:
+          type: boolean
+          description: Indicates whether collection can be uploaded or not
+          default: false
+        CanView:
+          type: boolean
+          description: Indicates whether collection can is viewable or not.
+          default: false
+        JobId:
+          type: string
+          description: JobId corresponding to this collection
+          nullable: false
+        UploadDate:
+          type: string
+          description: Collection Uploaded Date
+          nullable: false
+        UploadErrorCode:
+          type: string
+          description: Collection Uploaded Error Code
+          nullable: false
+        UploadErrorMessage:
+          type: string
+          description: Collection Uploaded Error message
+          nullable: false
+        Progress:
+          type: integer
+          format: int32
+          description: Collection Progress
+        DeviceDetails:
+          $ref: '#/components/schemas/CollectionDevices'
+        ReportPath:
+          type: string
+          description: absolute path of the collection report file
+          readOnly: true
+    ClientInfo:
+      type: object
+      properties:
+        Company:
+          type: string
+          nullable: false
+          description: Company name
+        Country:
+          type: string
+          nullable: false
+          description: Country code
+        DispatchDetailsEnabled:
+          type: boolean
+          default: false
+          description: Auto Dispatch opted or not
+        TdIntegrationEnabled:
+          type: boolean
+          nullable: false
+          description: Tech direct integration status
+        PrimaryContact:
+          $ref: '#/components/schemas/ContactProfile'
+        SecondaryContact:
+          $ref: '#/components/schemas/ContactProfile'
+    EnterpriseServerTestResult:
+      type: object
+      properties:
+        Hostname:
+          type: string
+          nullable: false
+          description: Server name
+        ResponseTime:
+          type: string
+          nullable: false
+          description: Ping duration in miliseconds
+        ConnectionStatus:
+          type: boolean
+          nullable: false
+          description: Connection status
+        StatusPort443:
+          type: boolean
+          nullable: false
+          description: Connection status for port 443
+        StatusPort8443:
+          type: boolean
+          nullable: false
+          description: Connection status for port 8443
+        ProxyEnabled:
+          type: boolean
+          nullable: false
+          description: true if proxy is enabled
+        LastVerified:
+          $ref: '#/components/schemas/Date'
+    CaseCreationTestResult:
+      type: object
+      properties:
+        ErrorCode:
+          type: string
+          nullable: false
+          description: errorCode from Test if not successful or not configured
+        ErrorMessage:
+          type: string
+          nullable: false
+          description: errorMessage from Test if not successful or not configured
+        LastVerifiedTime:
+          type: string
+          nullable: false
+          description: The Last time the test was verified
+        Status:
+          type: string
+          nullable: false
+          description: Status of Test Validated or Error
+    Cases:
+      type: object
+      readOnly: true
+      properties:
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseInformation'
+    CaseAction:
+      type: object
+      properties:
+        Id:
+          type: integer
+          nullable: false
+          description: Case Identifier
+        Notes:
+          type: string
+          maxLength: 2000
+          nullable: true
+          description: Notes about case
+    DispatchCityInfo:
+      type: object
+      description: TD city response information
+      properties:
+        ZipCode:
+          type: string
+          description: Zipcode
+          readOnly: true
+        CityName:
+          type: string
+          description: Cityname
+          readOnly: true
+    DispatchStateInfo:
+      type: object
+      description: TD state response information
+      properties:
+        DefaultTimeZone:
+          type: string
+          description: timezone
+          readOnly: true
+        StateCode:
+          type: string
+          description: State Code
+          readOnly: true
+        StateDescription:
+          type: string
+          description: State Name
+          readOnly: true
+    DispatchCountryInfo:
+      type: object
+      description: TD Country response information
+      properties:
+        CountryCode:
+          type: string
+          description: ISO Country Code
+          readOnly: true
+        Description:
+          type: string
+          description: Country name and description
+          readOnly: true
+        AddressValidation:
+          type: boolean
+          description: Address Validation enabled
+          readOnly: true
+          default: false
+        AddressLines:
+          type: string
+          description: Number of address lines supported for that country
+          readOnly: true
+        LinesRequired:
+          type: string
+          description: Number of mandatory address lines for this country
+          readOnly: true
+        HasStates:
+          type: string
+          description: States are available or not for this country
+          readOnly: true
+        DefaultTimeZone:
+          type: string
+          description: Ttimezone for this Country
+          readOnly: true
+        ZipRequired:
+          type: boolean
+          description: zipcode is required or not for this country
+          readOnly: true
+          default: false
+    TechDirectDetail:
+      type: object
+      properties:
+        Countries:
+          type: object
+          properties:
+            odata.id:
+              type: string
+              description: Navigation link to TD Countries
+              example: /SupportAssistService/Registration/TechDirect/Countries
+        States:
+          type: object
+          properties:
+            odata.id:
+              type: string
+              description: Navigation link to TD States
+              example: /SupportAssistService/Registration/TechDirect/States
+        Cities:
+          type: object
+          properties:
+            odata.id:
+              type: string
+              description: Navigation link to TD Cities
+              example: /SupportAssistService/Registration/TechDirect/Cities
+        TdIntegrationStatus:
+          type: boolean
+          nullable: false
+          description: TD Integration status
+        AccountInfo:
+          type: object
+          description: Naivgation link to Account details
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/Registration/TechDirect/AccountDetails
+    TDAccount:
+      type: object
+      properties:
+        Username:
+          type: string
+          nullable: false
+          description: Tech direct username
+        FirstName:
+          type: string
+          nullable: false
+          description: Tech direct user first name
+        LastName:
+          type: string
+          nullable: false
+          description: Tech direct user last name
+        ProfileID:
+          type: string
+          nullable: false
+          description: Tech direct profile id
+    SupportAssistRegistration:
+      type: object
+      properties:
+        RegistrationID:
+          type: string
+          nullable: true
+          description: Plugin Registration ID.
+        SerialNumber:
+          type: string
+          nullable: false
+          description: Serial Number
+        ClientDetails:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/Registration/ClientDetails
+              description: Navigation Link to Client details.
+        TechDirect:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/Registration/TechDirect
+              description: Navigation link to TechDirect details
+    ClientDetails:
+      type: object
+      properties:
+        ContactInfo:
+          $ref: '#/components/schemas/ClientInfo'
+        DispatchInfo:
+          $ref: '#/components/schemas/RegistrationShippingDetails'
+    Setting:
+      type: object
+      properties:
+        Collection:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/Configurations/Collection
+        ActivitySchedule:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/Configurations/ActivitySchedule
+        MaintenanceMode:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/Configurations/MaintenanceMode
+        Email:
+          type: object
+          properties:
+            '@odata.id':
+              type: string
+              example: /SupportAssistService/Configurations/Email
+      description: ''
+    EmailSettings:
+      type: object
+      properties:
+        Enabled:
+          type: boolean
+          nullable: false
+          description: Enable to get email from DellEMC. (Support only Cases related emails)
+        Language:
+          type: string
+          nullable: false
+          description: Email language
+    CollectionSettings:
+      type: object
+      properties:
+        IncludeSystemLog:
+          type: boolean
+          description: Include System Logs in Collection
+        IncludeSMARTLogs:
+          type: boolean
+          description: Include SMART Logs in Collection
+        IncludeSoftwareInfo:
+          type: boolean
+          description: Include SoftwareInfo in Collection
+        IncludeIdentification:
+          type: boolean
+          description: Include Device Identification in Collection
+        UploadLog:
+          type: boolean
+          description: 'Enable Collection upload to DellEMC '
+    ContactProfile:
+      type: object
+      readOnly: false
+      properties:
+        FirstName:
+          type: string
+          nullable: false
+          description: Customer first name
+        LastName:
+          type: string
+          nullable: false
+          description: Customer last name
+        Email:
+          type: string
+          nullable: false
+          description: Customer email address
+        Phone:
+          type: string
+          nullable: false
+          maxLength: 40
+          minLength: 3
+          description: Customer contact number
+        AlternatePhone:
+          type: string
+          nullable: true
+          maxLength: 40
+          minLength: 3
+          description: Customer altername phone name
+        TimeFrame:
+          type: string
+          nullable: false
+          description: preferred contact hours
+          example: '10:00AM-4:00PM'
+        TimeZone:
+          type: string
+          nullable: false
+          description: preferred contact zone
+          example: 'UTC+5:30 Asia/Kolkatta'
+        ContactMethod:
+          type: string
+          enum:
+            - phone
+            - email
+          description: Customer preferred contact types
+    RegistrationContact:
+      type: object
+      readOnly: false
+      properties:
+        FirstName:
+          type: string
+          nullable: false
+          description: Customer first name
+        LastName:
+          type: string
+          nullable: false
+          description: Customer last name
+        Email:
+          type: string
+          nullable: false
+          description: Customer email address
+        Phone:
+          type: string
+          nullable: false
+          maxLength: 40
+          minLength: 3
+          description: Customer contact number
+        AlternatePhone:
+          type: string
+          nullable: true
+          maxLength: 40
+          minLength: 3
+          description: Customer altername phone name
+    Contact:
+      type: object
+      readOnly: false
+      properties:
+        FirstName:
+          type: string
+          nullable: false
+          description: Customer first name
+        LastName:
+          type: string
+          nullable: false
+          description: Customer last name
+        Email:
+          type: string
+          nullable: false
+          description: Customer email address
+        Phone:
+          type: string
+          nullable: false
+          maxLength: 40
+          minLength: 3
+          description: Customer contact number
+        AlternatePhone:
+          type: string
+          nullable: true
+          maxLength: 40
+          minLength: 3
+          description: Customer altername phone name
+    RegistrationShippingDetails:
+      type: object
+      readOnly: false
+      properties:
+        PrimaryContact:
+          $ref: '#/components/schemas/RegistrationContact'
+        SecondaryContact:
+          $ref: '#/components/schemas/RegistrationContact'
+        Country:
+          type: string
+          nullable: true
+          description: TechDirect Country of shipping contact
+        State:
+          type: string
+          nullable: true
+          description: TechDirect State of shipping contact
+        City:
+          type: string
+          nullable: true
+          description: TechDirect City of shipping contact
+        Zip:
+          type: string
+          nullable: true
+          description: Zip code of shipping contact
+        Cnpj:
+          type: string
+          nullable: true
+          description: cnpj name of shipping contact
+        Ie:
+          type: string
+          nullable: true
+          description: ie of shipping contact
+        AddressLine1:
+          type: string
+          nullable: true
+          description: Address line1 of shipping contact
+        AddressLine2:
+          type: string
+          nullable: true
+          description: Address line2 of shipping contact
+        AddressLine3:
+          type: string
+          nullable: true
+          description: Address line3 of shipping contact
+        AddressLine4:
+          type: string
+          nullable: true
+          description: Address line4 of shipping contact
+        PreferredContactTimeZone:
+          type: string
+          nullable: true
+          description: preferred contact zone
+          example: 'UTC+5:30 Asia/Kolkatta'
+        PreferredContactTimeFrame:
+          type: string
+          nullable: true
+          description: preferred time frame
+        TechnicianRequired:
+          type: boolean
+          default: true
+          description: Technician is required or not
+        DispatchNotes:
+          type: string
+          nullable: true
+          description: Dispatch note for shipping contact
+    ShippingDetails:
+      type: object
+      readOnly: false
+      properties:
+        PrimaryContact:
+          $ref: '#/components/schemas/Contact'
+        SecondaryContact:
+          $ref: '#/components/schemas/Contact'
+        Country:
+          type: string
+          nullable: true
+          description: TechDirect Country of shipping contact
+        State:
+          type: string
+          nullable: true
+          description: TechDirect State of shipping contact
+        City:
+          type: string
+          nullable: true
+          description: TechDirect City of shipping contact
+        Zip:
+          type: string
+          nullable: true
+          description: Zip code of shipping contact
+        Cnpj:
+          type: string
+          nullable: true
+          description: cnpj name of shipping contact
+        Ie:
+          type: string
+          nullable: true
+          description: ie of shipping contact
+        AddressLine1:
+          type: string
+          nullable: true
+          description: Address line1 of shipping contact
+        AddressLine2:
+          type: string
+          nullable: true
+          description: Address line2 of shipping contact
+        AddressLine3:
+          type: string
+          nullable: true
+          description: Address line3 of shipping contact
+        AddressLine4:
+          type: string
+          nullable: true
+          description: Address line4 of shipping contact
+        PreferredContactTimeZone:
+          type: string
+          nullable: true
+          description: preferred contact zone
+          example: 'UTC+5:30 Asia/Kolkatta'
+        PreferredContactTimeFrame:
+          type: string
+          nullable: true
+          description: preferred time frame
+        TechnicianRequired:
+          type: boolean
+          default: true
+          description: Technician is required or not
+        DispatchNotes:
+          type: string
+          nullable: true
+          description: Dispatch note for shipping contact
+    Date:
+      type: string
+      format: date-time
+      description: "date-time format definded by rfc3339. yyyy-MM-dd'T'HH:mm:ss'Z'"
+    ScheduleActivitySettings:
+      type: object
+      readOnly: false
+      properties:
+        PeriodicCollectionEnabled:
+          type: boolean
+          description: Enable periodic collection
+        PeriodicInventoryValidationEnabled:
+          type: boolean
+          description: Enable periodic inventory validation
+        PeriodicCollectionSchedule:
+          type: integer
+          description: Month-Day (1 to 29) for periodic collection
+        PeriodicInventoryValidationSchedule:
+          type: integer
+          description: Month-Day (1 to 29) for periodic inventory validation
+    MaintenanceModeSettings:
+      type: object
+      properties:
+        MaintenanceModeState:
+          type: boolean
+          default: false
+          description: Enable Site Level MaintenanceMode
+    CaseInformation:
+      type: object
+      properties:
+        Id:
+          type: integer
+          format: int64
+          readOnly: true
+          description: 'delta case id, for dummy cases this would be generated by SAE'
+        Name:
+          type: string
+          description: This will have friendly name or hostname/FQDN or IP Address
+          readOnly: true
+        Title:
+          type: string
+          maxLength: 512
+          description: Auto generate title by backend
+          readOnly: true
+        ServiceTag:
+          type: string
+          nullable: true
+          maxLength: 10
+          description: service tag or serial number of Dell device
+          readOnly: true
+        Status:
+          type: string
+          enum:
+            - Open
+            - Submitted
+            - InProgress
+            - Suspended
+            - ReqForClosure
+          description: 'status of case, Suspended and ReqForClosure is the state maintained in SAE, backend system would not have this status'
+        EventSource:
+          type: string
+          enum:
+            - Phone
+            - Email
+            - Chat
+            - SupportAssist
+            - TechDirect
+            - HelpDesk
+            - Others
+          description: The source from which case is created.
+          readOnly: true
+        ServiceContract:
+          type: string
+          enum:
+            - ProSupportFlex
+            - ProSupportPlus
+            - ProSupport
+            - Basic
+            - ExpiredWarranty
+            - NoWarranty
+            - InvalidServiceTag
+            - Unknown
+          description: Different service contract type/offerings.
+          readOnly: true
+        DummyCase:
+          type: boolean
+          description: 'if the service contract is basis or expired or unknown warranty. To endorse the case creation capability, a dummy case would be create in SAE.'
+          readOnly: true
+        UpdatedDate:
+          $ref: '#/components/schemas/Date'
+        CreatedDate:
+          $ref: '#/components/schemas/Date'
+    GenericErrorMesage:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Generic error code
+            message:
+              type: string
+              description: short description of error
+            '@Message.ExtendedInfo':
+              type: array
+              description: Extended Message about error
+              items:
+                type: object
+                properties:
+                  MessageId:
+                    type: string
+                  RelatedProperties:
+                    type: array
+                    items: {}
+                  Message:
+                    type: string
+                  MessageArgs:
+                    type: array
+                    items:
+                      type: string
+                  Severity:
+                    type: string
+                  Resolution:
+                    type: string
+      x-examples:
+        genricErrorExample:
+          error:
+            code: Base.1.0.GeneralError
+            message: A general error has occurred. See ExtendedInfo for more information.
+            '@Message.ExtendedInfo':
+              - MessageId: CGEN1006
+                RelatedProperties: []
+                Message: Unable to complete the request because the resource URI does not exist or is not implemented.
+                MessageArgs: []
+                Severity: Critical
+                Resolution: "Check the request resource URI. Refer to the OpenManage Enterprise-Modular User's Guide for more information about resource URI and its properties."
+      description: ''
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: Basic authentication using username and password
+    xAuth:
+      type: http
+      scheme: bearer
+      description: xAuth Tokens obtained for a Session
+paths:
+  /SupportAssistService/Configurations:
+    get:
+      summary: SupportAssist Configuration
+      tags:
+        - Plugin Setting
+      parameters: []
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Setting'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: "Lists all configuration API endpoints. \n\n\nPrivilege: VIEW"
+      operationId: getConfigurationEndPoints
+  /SupportAssistService/Configurations/Collection:
+    get:
+      summary: Get SupportAssist Collection Settings
+      tags:
+        - Plugin Setting
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionSettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves configurations related to collection preferences.
+
+
+        Privilege: VIEW
+      operationId: getCollectionConfiguration
+    put:
+      summary: Modify SupportAssist Collection Setting
+      tags:
+        - Plugin Setting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionSettings'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionSettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Modifies collection preferences
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: setCollectionConfiguration
+  /SupportAssistService/Configurations/MaintenanceMode:
+    get:
+      summary: Get SupportAssist MaintenanceMode Settings
+      tags:
+        - Plugin Setting
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceModeSettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves configurations related to the SupportAssist Maintenance mode.
+
+
+        Privilege: VIEW
+      operationId: getMaintenanceModeConfiguration
+    put:
+      summary: Modify SupportAssist MaintenanceMode Setting
+      tags:
+        - Plugin Setting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaintenanceModeSettings'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceModeSettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Modifies the SupportAssist Maintenance mode configurations.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: setMaintenanceModeConfiguration
+  /SupportAssistService/Configurations/ActivitySchedule:
+    get:
+      summary: Get SupportAssist ActivitySchedule Settings
+      tags:
+        - Plugin Setting
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleActivitySettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: "Retrieves configurations related to collection and inventory validation schedule. \n\n\nPrivilege: VIEW"
+      operationId: getActivityScheduleConfiguration
+    put:
+      summary: Modify SupportAssist ActivitySchedule Setting
+      tags:
+        - Plugin Setting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleActivitySettings'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleActivitySettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Modifies collection and inventory validation schedule.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: setActivityScheduleConfiguration
+  /SupportAssistService/Configurations/Email:
+    get:
+      summary: Get SupportAssist Email Settings
+      tags:
+        - Plugin Setting
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves email notification settings. SupportAssist sends email notifications when a support case is created automatically, about maintenance mode, device status, and network connectivity status.
+
+
+        Privilege: VIEW
+      operationId: getEmailConfiguration
+    put:
+      summary: Modify SupportAssist Email Setting
+      tags:
+        - Plugin Setting
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSettings'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSettings'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: "Modifies email notification settings. \n\n\nPrivilege: DEVICE_CONFIGURATION"
+      operationId: setEmailConfiguration
+  /SupportAssistService/Registration/TechDirect/Countries:
+    get:
+      summary: TechDirect Country List
+      tags:
+        - TechDirect
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DispatchCountryInfo'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the list of countries for which TechDirect is enabled.
+
+
+        Privilege: VIEW
+      operationId: getTdCountries
+  /SupportAssistService/Registration/TechDirect/States:
+    get:
+      summary: TechDirect State List
+      tags:
+        - TechDirect
+      parameters:
+        - $ref: '#/components/parameters/CountryCode'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DispatchStateInfo'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the list of states in a country.
+
+
+        Privilege: VIEW
+      operationId: getStates
+  /SupportAssistService/Registration/TechDirect/Cities:
+    get:
+      summary: TechDirect City List
+      tags:
+        - TechDirect
+      parameters:
+        - $ref: '#/components/parameters/CountryCode'
+        - $ref: '#/components/parameters/StateCode'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DispatchCityInfo'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the list of cities in a state or country.
+
+
+        Privilege: VIEW
+      operationId: getCities
+  /SupportAssistService/Actions/SupportAssistService.Authenticate:
+    post:
+      summary: Authenticate Client
+      tags:
+        - Plugin Registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ApiKey:
+                  type: string
+                  nullable: false
+                ApiPin:
+                  type: string
+                  nullable: false
+        description: API Key/Pin for authentication
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Use this method to authenticate SupportAssist with Dell EMC by using the API Key and PIN obtained from Dell EMC.
+
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: authenticateClient
+  /SupportAssistService/Actions/SupportAssistService.FetchDeviceDetails:
+    post:
+      summary: Get Device SupportAssist Details
+      tags:
+        - Plugin Registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                DeviceId:
+                  type: integer
+                  description: DeviceId for which details are required
+        description: Device Identifier available in OME device info
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAEAsset'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Use this method to authenticate SupportAssist with Dell EMC by using the API Key and PIN obtained from Dell EMC.
+
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: getAssetById
+  /SupportAssistService/Actions/SupportAssistService.ValidateDispatchAddress:
+    post:
+      summary: Validate Dispatch Address
+      tags:
+        - Plugin Registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchAddressRequest'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Valid:
+                    type: boolean
+                    description: True if address is valid
+                  SuggestedAddress:
+                    $ref: '#/components/schemas/DispatchAddressRequest'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Validates dispatch address. Supported only for US and Canada.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: validateAddress
+  /SupportAssistService/Registration:
+    get:
+      summary: Get Registration Information
+      tags:
+        - Plugin Registration
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportAssistRegistration'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves SupportAssist registration details and other registration related navigation links.
+
+
+        Privilege: VIEW
+      operationId: getRegistrationStatus
+  /SupportAssistService/Registration/ClientDetails:
+    get:
+      summary: Get Client Registration Information
+      tags:
+        - Plugin Registration
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves registered contact details.
+
+
+        Privilege: VIEW
+      operationId: getClientDetails
+  /SupportAssistService/Registration/Countries:
+    get:
+      summary: Get Registration Countries
+      tags:
+        - Plugin Registration
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NonDispatchCountry'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the list of countries for which SupportAssist is enabled.
+
+
+        Privilege: VIEW
+      operationId: getCountries
+  /SupportAssistService/Actions/SupportAssistService.UpdateClient:
+    post:
+      summary: Update Client Information
+      tags:
+        - Plugin Registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDetails'
+        description: Client Details
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Modifies registered contact details.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: updateClientDetails
+  /SupportAssistService/Actions/SupportAssistService.Register:
+    post:
+      summary: Register SupportAssist
+      tags:
+        - Plugin Registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDetails'
+        description: Client details required for Registration
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: string
+                nullable: false
+                description: RegistrationID
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Registers SupportAssist with Dell EMC.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: registerClient
+  /SupportAssistService/Registration/TechDirect:
+    get:
+      summary: Get TechDirect Integration Information
+      tags:
+        - TechDirect
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechDirectDetail'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves TechDirect integration status and TechDirect related navigation links.
+
+
+        Privilege: VIEW
+      operationId: getTechDirectIntegrationStatus
+  /SupportAssistService/Registration/TechDirect/AccountInfo:
+    get:
+      summary: Get TechDirect Account Details
+      tags:
+        - TechDirect
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TDAccount'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves TechDirect account information.
+
+
+        Privilege: VIEW
+      operationId: getTDAccountDetails
+  /SupportAssistService/Actions/SupportAssistService.IntegrateTDAccount:
+    post:
+      summary: Intergate TechDirect Account
+      tags:
+        - Plugin Registration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Otp:
+                  type: string
+                  nullable: false
+        description: OTP recieved from external link
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Integrates TechDirect with SupportAssist.
+
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: registerToTechDirect
+  /SupportAssistService/ServerTests:
+    get:
+      summary: Get Enterprise Server List
+      tags:
+        - Connectivity
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  EnterpriseServerTestResult:
+                    type: string
+                    description: Navigation link to Enterprise Server Test
+                  CaseCreationTestResult:
+                    type: string
+                    description: Navigation link to Case Creation Test
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the API endpoints for Dell EMC Enterprise server connectivity and case creation tests.
+
+
+        Privilege: VIEW
+      operationId: getTestsEndPoints
+  /SupportAssistService/ServerTests/EnterpriseServerTestResult:
+    get:
+      summary: Get Dell EMC backend Connectivity Tests Results
+      tags:
+        - Connectivity
+      parameters:
+        - $ref: '#/components/parameters/TestNow'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnterpriseServerTestResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |
+        Performs test connection checks to the Dell EMC Enterprise servers and shows the results. To retrieve  the previous results, set the Query param testServer value to "false".
+
+
+        Privilege: VIEW
+      operationId: testServerConn
+  /SupportAssistService/ServerTests/CaseCreationTestResult:
+    get:
+      summary: Test Case Creation Capability
+      tags:
+        - Connectivity
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseCreationTestResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves SupportAssist case creation capability test results. By default, this test is performed every 24 hours.
+
+
+        Privilege: VIEW
+      operationId: testCaseCreation
+  /SupportAssistService/Cases:
+    get:
+      summary: View all Cases
+      tags:
+        - Case Management
+      parameters:
+        - $ref: '#/components/parameters/Top'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/CasesSort'
+        - $ref: '#/components/parameters/CaseId'
+        - $ref: '#/components/parameters/CaseServiceContract'
+        - $ref: '#/components/parameters/CaseEventSource'
+        - $ref: '#/components/parameters/ServiceTag'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cases'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the list of all cases that are created by SupportAssist.
+
+
+        Privilege: VIEW
+      operationId: getAllCases
+  /SupportAssistService/Actions/SupportAssistService.ResumeCase:
+    post:
+      summary: Resume Case
+      tags:
+        - Case Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseAction'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |
+        Requests Technical Support to resume activity for a support case.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: resumeCase
+  /SupportAssistService/Actions/SupportAssistService.SuspendCase:
+    post:
+      summary: Suspend Case
+      tags:
+        - Case Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseAction'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Requests Technical Support to stop activities for a support case.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: suspendCase
+  /SupportAssistService/Actions/SupportAssistService.RequestForClosure:
+    post:
+      summary: Request for Close Case
+      tags:
+        - Case Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseAction'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Requests Technical Support to close a support case.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: closeCase
+  /SupportAssistService/Collections:
+    get:
+      summary: Get List of Collections
+      tags:
+        - Collections Management
+      parameters:
+        - $ref: '#/components/parameters/Top'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/OrderBy'
+        - $ref: '#/components/parameters/CollectionsSort'
+        - $ref: '#/components/parameters/CollectionPurpose'
+        - $ref: '#/components/parameters/CollectionStatus'
+        - $ref: '#/components/parameters/CollectionType'
+        - $ref: '#/components/parameters/DeviceId'
+        - $ref: '#/components/parameters/ServiceTag'
+        - $ref: '#/components/parameters/HostName'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collections'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Lists all SupportAssist collections.
+
+
+        Privilege: VIEW
+      operationId: getCollections
+  /SupportAssistService/Collections(id)/Details:
+    get:
+      summary: Get Collection Detail
+      tags:
+        - Collections Management
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionDetail'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: "Retrieves the details of a collection (id). \n\n\nPrivilege: VIEW"
+      operationId: getCollectionsById
+  /SupportAssistService/Actions/SupportAssistService.StartCollection:
+    post:
+      summary: Start Collection
+      tags:
+        - Collections Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionPostDetails'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  JobId:
+                    type: string
+                    description: JobId for collection task
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Starts the collection from one or more devices.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: startCollection
+  /SupportAssistService/Actions/SupportAssistService.UploadCollection:
+    post:
+      summary: Upload Collection to Dell EMC backend
+      tags:
+        - Collections Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionIds'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Uploads collections to Dell EMC.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: uploadCollection
+  /SupportAssistService/Actions/SupportAssistService.CancelCollection:
+    post:
+      summary: Cancel Collection Job
+      tags:
+        - Collections Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionId'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Stops the collection that is in progress.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: cancelCollection
+  /SupportAssistService/Actions/SupportAssistService.SetDevicesMaintenanceMode:
+    post:
+      summary: Set Devices to Maintenance Mode
+      tags:
+        - Device Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Devices:
+                  type: array
+                  description: Device Identifiers.
+                  items:
+                    type: string
+                    description: Device Ids
+                MaintenanceMode:
+                  type: boolean
+                  description: flag to enable or disable maintenane mode
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Enables or disables the device-level SupportAssist Maintenance mode.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: setdevicesMaintenanceMode
+  /SupportAssistService/DeviceSummary:
+    get:
+      summary: Get SupportAssist Devices Summary
+      tags:
+        - Dashboard Management
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetSummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Lists the API endpoints for the device summary.
+
+
+        Privilege: VIEW
+      operationId: getDevicesSummaryEndPoints
+  /SupportAssistService/DeviceSummary/ManagedDeviceSummary:
+    get:
+      summary: Get SupportAssist Managed Assets Summary
+      tags:
+        - Dashboard Management
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAEAssetSummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Gets the summary of SupportAssist managed devices.
+
+
+        Privilege: VIEW
+      operationId: getManagedDevicesSummary
+  /SupportAssistService/DeviceSummary/StagingDeviceSummary:
+    get:
+      summary: Get SupportAssist Staged Assets Summary
+      tags:
+        - Dashboard Management
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StagedAssetSummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Gets the summary of SupportAssist staging devices.
+
+
+        Privilege: VIEW
+      operationId: getStagedDevicesSummary
+  /SupportAssistService/DeviceSummary/UnmanagedDeviceSummary:
+    get:
+      summary: Get Supportassist Unmanaged Devices
+      tags:
+        - Dashboard Management
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnmanagedDeviceSummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Lists the unmanaged devices.
+
+
+        Privilege: VIEW
+      operationId: getUnManagedDevicesSummary
+  /SupportAssistService/DeviceSummary/GroupEligibleDevices:
+    get:
+      summary: Get Group Elgible Device List
+      tags:
+        - Group Management
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  value:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DeviceModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the list of eligible devices for creating a device group.
+
+
+        Privilege: VIEW
+      operationId: fetchGroupEligibleDevices
+  /SupportAssistService:
+    get:
+      summary: Get SupportAssist Service Navigation Links
+      tags:
+        - SupportAssist Service
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportAssistMain'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Lists all SupportAssist API endpoints links.
+
+
+        Privilege: VIEW
+      operationId: getSupportAssistEndPoints
+  /SupportAssistService/Actions/SupportAssistService.CreateOrUpdateGroup:
+    post:
+      summary: Create or Update User Defined Groups
+      tags:
+        - Group Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupModel'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Create or update SupportAssist device group.
+
+
+        Privilege: GROUP_MANAGEMENT
+      operationId: createOrUpdateGroup
+  /SupportAssistService/Actions/SupportAssistService.DeleteGroup:
+    post:
+      summary: Remove User Defined Groups
+      tags:
+        - Group Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                GroupId:
+                  type: integer
+                  nullable: false
+                  description: Group Identfier of created group
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Delete a SupportAssist device group.
+
+
+        Privilege: GROUP_MANAGEMENT
+      operationId: deleteGroup
+  /SupportAssistService/Actions/SupportAssistService.AddMemberDevices:
+    post:
+      summary: Add Devices to User Defined Groups
+      tags:
+        - Group Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                GroupId:
+                  type: integer
+                  nullable: false
+                  description: Group Identifier of created group
+                MemberDeviceIds:
+                  type: array
+                  description: List of Device Identifiers
+                  items:
+                    type: integer
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  GroupId:
+                    type: integer
+                    nullable: false
+                    description: GroupId of created group
+                  MemberDeviceIds:
+                    type: array
+                    description: Devices added to Group
+                    items:
+                      type: integer
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      operationId: addMemberDevicesToGroup
+      description: |-
+        Add one or more devices to a device group.
+
+
+        Privilege: GROUP_MANAGEMENT
+  /SupportAssistService/Actions/SupportAssistService.RemoveMemberDevices:
+    post:
+      summary: Remove Devices from User Defined Groups
+      tags:
+        - Group Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                GroupId:
+                  type: integer
+                  nullable: false
+                  description: GroupId of created group
+                MemberDeviceIds:
+                  type: array
+                  description: Device Identifiers that needs to be removed
+                  items:
+                    type: integer
+        description: Remove Devices from a Group.
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      operationId: removeMemberDevicesFromGroup
+      description: |-
+        Remove one of more devices from a SupportAssist device group.
+
+
+        Privilege: GROUP_MANAGEMENT
+  /SupportAssistService/Actions/SupportAssistService.FetchGroupCustomerDetails:
+    post:
+      summary: Retrieve Contact Details of Group
+      tags:
+        - Group Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                GroupId:
+                  type: integer
+                  nullable: false
+                  description: GroupId of created group
+        description: Fetch Group Customer Details.
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves the contact and dispatch details of a device group.
+
+
+        Privilege: GROUP_MANAGEMENT
+      operationId: fetchGroupCustomerDetails
+  /SupportAssistService/Actions/SupportAssistService.SetGroupStatusFlags:
+    post:
+      summary: Set Group Status Flags
+      tags:
+        - Group Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                GroupId:
+                  type: integer
+                  nullable: false
+                  description: GroupId of created group
+                StatusFlags:
+                  type: object
+                  properties:
+                    MaintenanceMode:
+                      type: boolean
+                      nullable: false
+                      description: Enable or Disable Maintenance Mode.
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Create or update SupportAssist device group.
+
+
+        Privilege: GROUP_MANAGEMENT
+      operationId: setGroupStatusFlags
+  /SupportAssistService/Actions/SupportAssistService.FetchGroupStatusFlags:
+    post:
+      summary: Retrieves Group status flags
+      tags:
+        - Group Management
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupStatusMap'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Retrieves maintenance mode flag for a device group.
+
+
+        Privilege: VIEW
+      operationId: fetchGroupStatusFlags
+  /SupportAssistService/Actions/SupportAssistService.StartCollectionForGroup:
+    post:
+      summary: Start Collection for Group
+      tags:
+        - Collections Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCollectionPostDetails'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  JobId:
+                    type: integer
+                    nullable: false
+                    description: Job Identifier
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorMesage'
+      description: |-
+        Starts collection for a device group.
+
+
+        Privilege: DEVICE_CONFIGURATION
+      operationId: startGroupCollection
+security:
+  - BasicAuth: []
+  - xAuth: []
